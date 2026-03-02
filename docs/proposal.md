@@ -69,66 +69,65 @@ For a 2-person team over ~5 weeks, this scope is realistic. One member owns the 
 
 Team members:
 
-- **Frontend**: Ethan Yao (React + TypeScript + Tailwind + shadcn/ui)
-- **Backend/DB**: Jarvis Wang (Express.js + TypeScript + PostgreSQL + Prisma)
+- Ethan Yao — Frontend (React + TypeScript + Tailwind + shadcn/ui)
+- Jarvis Wang — Backend/DB (Express.js + TypeScript + PostgreSQL + Prisma)
 
-Coordination approach:
+Coordination:
 
-- Define an API contract early (endpoint list + request/response shapes) and keep it stable.
-- Develop in parallel using mocked responses on the frontend until backend endpoints are ready.
-- Integrate continuously (at least 2 integration sessions per week) to avoid a “big-bang” merge near the end.
+- Agree on an API contract early (endpoints + request/response shapes).
+- Share TypeScript API types + example payloads to keep frontend/backend aligned.
+- Work in parallel (frontend mocks while backend endpoints land).
+- Integrate continuously (at least twice per week) to avoid late surprises.
+- Track tasks in GitHub Issues and keep changes small via pull requests, with quick reviews before merging.
 
 ### Week 1 — Foundations + API contract
 
 - Ethan (Frontend)
-	- Set up React + TypeScript project with Tailwind + shadcn/ui base layout and routing.
-	- Build static UI skeletons for: Recipe Library (card grid), Recipe Detail page, Meal Planner calendar view.
-	- Define shared TypeScript types for Recipe/Ingredient/MealPlanEntry in a small “API types” module.
+	- Scaffold React + TS + Tailwind + shadcn/ui + routing.
+	- Build page skeletons (Library, Detail, Planner) and shared types.
+	- Define reusable UI components (recipe card, form, planner slot).
 
 - Jarvis (Backend/DB)
-	- Initialize Express.js TypeScript server structure and REST API documentation approach.
-	- Set up PostgreSQL + Prisma schema and migrations for the core tables (User, Recipe, Ingredient, Tag/RecipeTag, MealPlan, MealPlanEntry).
-	- Implement minimal CRUD endpoints for recipes (create/list/get/update/delete), scoped by authenticated user (auth can be temporarily stubbed in week 1).
+	- Scaffold Express + TS + Prisma + PostgreSQL.
+	- Implement schema/migrations and initial recipe CRUD (user-scoped).
+	- Draft REST endpoint list and example request/response bodies for early integration.
 
 ### Week 2 — Core CRUD + file upload path
 
 - Ethan (Frontend)
-	- Implement full Recipe Management UI flows: create/edit forms, recipe list search by keyword/tag, recipe detail rendering.
-	- Wire up API calls for recipe CRUD; show loading/error states.
-	- Implement cover photo selection UI and upload trigger (client-to-backend upload endpoint).
+	- Implement recipe create/edit, list search, and detail view.
+	- Wire CRUD API calls + loading/error states + photo upload UI.
+	- Add basic client-side validation for recipe form fields (required title, ingredient rows).
 
 - Jarvis (Backend/DB)
-	- Implement authentication with Better Auth (register/login/logout) using HTTP-only session cookies.
-	- Add authorization middleware and ensure all data access is user-scoped.
-	- Implement photo upload integration with AWS S3 (or DigitalOcean Spaces): generate upload flow, store `imageUrl` on the Recipe.
+	- Implement Better Auth (register/login/logout) with HTTP-only session cookies.
+	- Add auth middleware + photo upload to Spaces; persist `imageUrl`.
+	- Add request validation and consistent error response format for the main routes.
 
 ### Week 3 — Meal planner + AI endpoints
 
 - Ethan (Frontend)
-	- Build weekly meal planner UI: 7-day grid with breakfast/lunch/dinner slots.
-	- Implement drag-and-drop assignment from recipe library into slots; support clearing and reassignment.
-	- Connect meal plan UI to backend: load/save meal plan entries for the selected week.
+	- Build weekly planner grid (7 days × 3 meals) with drag-and-drop.
+	- Connect planner to backend (load/save weekly entries).
+	- Add clear/replace interactions for slots so the planner is easy to adjust.
 
 - Jarvis (Backend/DB)
-	- Implement MealPlan + MealPlanEntry endpoints (get/create week plan, upsert entries, clear entries).
-	- Implement OpenAI integration endpoints:
-		- Recipe-level “Analyze Nutrition” (send ingredient list; return macro estimates + dietary notes).
-		- Meal-plan-level “AI Diet Suggestions” (send planned meals; return weekly balance recommendations).
-	- Add basic rate limiting / request validation for AI routes (to control cost and avoid invalid payloads).
+	- Implement MealPlan/MealPlanEntry endpoints (get/create week, upsert/clear).
+	- Implement OpenAI routes for recipe nutrition + weekly suggestions (+ validation).
+	- Ensure AI endpoints return structured, UI-friendly content (e.g., a short summary plus bullet suggestions).
 
 ### Week 4 — Integration, polish, and demo readiness
 
 - Ethan (Frontend)
-	- Integrate AI result panels on Recipe Detail + Meal Planner views.
-	- Improve responsiveness and UX polish (empty states, validation, consistent layout).
-	- Do end-to-end testing of core user flows (auth → recipe CRUD → upload photo → meal planning → AI analysis).
+	- Integrate AI panels in Detail + Planner.
+	- Polish responsiveness/validation; test end-to-end flows.
 
 - Jarvis (Backend/DB)
-	- Harden API behavior: consistent error responses, input validation, and clear API docs.
-	- Verify database constraints and cascading behavior (e.g., recipe delete cleans up ingredients/tags/entries as appropriate).
-	- Support integration testing with seeded data for development.
+	- Standardize error responses, validation, and API docs.
+	- Verify DB constraints/cascades; add seed data for development.
+	- Add basic safeguards on AI usage (timeouts, rate limiting, and prompt size constraints).
 
-Deliverable at end of week 4: a stable, demo-ready application where an authenticated user can manage recipes (with photos), create a weekly meal plan, and request AI-powered nutrition analysis and weekly diet suggestions.
+Definition of done by end of week 4: an authenticated user can (1) register/login, (2) create/edit/search recipes with a cover photo, (3) build a 7-day meal plan, and (4) request recipe-level nutrition analysis and week-level diet suggestions, with results displayed in the UI.
 
 ---
 
@@ -138,53 +137,53 @@ This section records our team’s initial thinking before consulting AI tools.
 
 1) **Application structure and architecture**
 
-We initially chose a separate frontend and backend (React SPA + Express.js REST API) because it allows clean separation of responsibilities and parallel development. With two team members, this structure lets Ethan focus on UI/UX and client state, while Jarvis focuses on database design and API correctness. A REST API also provides a clear integration boundary and makes it easier to test components independently.
+We chose a separate frontend and backend to split responsibilities and enable parallel work. Ethan focuses on UI/UX and client logic, while Jarvis focuses on the database and API, with a REST contract as the integration boundary.
 
 2) **Data and state design**
 
-From the start, we expected most state to be server-owned because the application is multi-user and user-scoped: recipes, meal plans, and AI analysis results should be tied to accounts and persist across sessions/devices. We planned to store core entities in a shared cloud-hosted PostgreSQL database so both developers could test against the same schema and realistic data early in development.
+We expected most state to be server-owned because recipes/meal plans are user-scoped and must persist across sessions. We planned a shared cloud-hosted PostgreSQL database so both developers could test against the same schema early.
 
-On the client, we expected mostly “view state” (form inputs, selected week, drag-and-drop interactions) plus cached server data fetched from the API, rather than complex global client-side state.
+On the frontend, we expected to keep complex state minimal: most data would be fetched from the backend and cached for responsiveness, while local state would cover view-specific interactions (form drafts, selected week, drag-and-drop ordering).
 
 3) **Feature selection and scope decisions**
 
-We selected the core features (recipe library + weekly planner + photo upload) because they form a coherent product loop: save recipes → plan meals → reduce decision fatigue and waste. For advanced features, authentication was essential because recipes and plans are personal data. External API integration via an LLM was a natural fit for our goal of “nutrition awareness with actionable suggestions,” and it cleanly satisfies the course’s external API / cloud-based AI category.
+We chose recipe library + weekly planner + photo upload as the core loop. Auth was necessary because the data is personal. LLM integration fit our “nutrition awareness with suggestions” goal and satisfies the external API requirement. We avoided unrelated features to keep scope realistic.
 
-We deliberately avoided adding unrelated features (e.g., social feeds, real-time collaboration) to keep scope realistic for a two-person team.
+We also made an early scope decision to focus the AI feature on actionable, user-facing summaries rather than “perfect nutrition accuracy,” since ingredient quantities and brand-specific nutrition data can be ambiguous.
 
 4) **Anticipated challenges**
 
 Before implementation, we expected the most difficult parts would be:
 
-- Designing reliable LLM prompts/output formats for both recipe-level nutrition estimates and week-level diet suggestions (ensuring responses are structured enough for UI display).
-- Frontend–backend integration risk (mismatched types, authentication cookie handling, and coordinating evolving endpoints while both layers are under active development).
-- Drag-and-drop meal planning interactions (ensuring usability and correct persistence to the backend).
+- Designing structured LLM outputs suitable for UI display.
+- Frontend–backend integration (types, cookie auth, evolving endpoints).
+
+We also expected cloud photo upload to require careful handling of file size limits, CORS, and secure association between uploaded images and recipe records.
 
 5) **Early collaboration plan**
 
-Our initial collaboration plan was to divide ownership by layer (frontend vs. backend/DB) and coordinate via an API contract and shared data models. We planned to:
+We divided ownership by layer (frontend vs. backend/DB) and coordinated around an API contract and shared data models, with frequent integration checkpoints. Ethan owns UI behavior and client-side state; Jarvis owns data modeling, authentication, and API behavior.
 
-- Write down endpoint definitions early and update them when scope changes.
-- Use short, frequent integration checkpoints rather than waiting until “everything is done.”
-- Keep responsibilities clear: Ethan owns UI behavior and client-side state; Jarvis owns data modeling, authentication, and API behavior.
+Practically, we planned to coordinate via GitHub Issues and short PRs, and to resolve integration questions early by agreeing on types and sample payloads before both sides implement in detail.
 
 ---
 
 ## 5. AI Assistance Disclosure
 
 1) **Which parts were developed without AI assistance?**
-
-We came up with the overall project idea, product motivation, core feature set, database schema concept (entities + relationships), and the high-level collaboration split without AI assistance. These parts reflect our own preferences and what we believe is feasible for a two-person team.
+  
+    We developed the project idea, motivation, core feature set, database schema concept (entities + relationships), and collaboration split without AI assistance.
 
 2) **If AI was used, what specific tasks or drafts did it help with?**
 
-We used AI tools to help interpret the course project requirements and to sanity-check our technical stack choices against those requirements (e.g., confirming that Option B with React + Express.js is acceptable, and identifying commonly used libraries that fit the constraints such as Prisma for PostgreSQL and Better Auth for cookie-based sessions). We also used AI for wording/structure edits to make the proposal more concise and rubric-aligned.
+    We used AI tools to interpret course requirements and sanity-check stack choices (e.g., Option B feasibility, Prisma, Better Auth). We also used AI for wording/structure edits.
+
+    AI was also helpful for quickly enumerating what must be explicitly mentioned so we could cross-check this document against the rubric.
 
 3) **One idea where AI input influenced the proposal (and how we evaluated it)**
 
-AI suggested using Better Auth for authentication (with HTTP-only session cookies) to match the course’s recommended tooling and to reduce the likelihood of implementing an insecure custom auth flow. We discussed tradeoffs:
+    AI suggested using Better Auth (HTTP-only session cookies) to match the course’s recommended tooling and reduce risk vs. custom auth.
 
-- **Pros**: faster implementation, standard session-cookie patterns, easier to protect REST endpoints.
-- **Cons/constraints**: learning curve, integration details (cookie handling, CORS), and ensuring all recipe/meal plan data is correctly scoped to the authenticated user.
+    We considered the faster implementation and standard session-cookie patterns against integration details (CORS/cookies) and the need to strictly scope all data to the authenticated user. We adopted Better Auth for lower security and schedule risk.
 
-We adopted Better Auth because it directly supports our requirement for authenticated, user-scoped data and reduces risk compared to building authentication from scratch.
+    Even after adopting the suggestion, we planned to validate the approach by ensuring protected routes truly reject unauthenticated requests, and by verifying that recipe/meal plan queries are always scoped by the current session user.
