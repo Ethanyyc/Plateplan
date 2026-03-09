@@ -13,8 +13,6 @@ interface RecipeDetailProps {
  *
  * Displays all recipe information: cover photo, metadata, ingredients,
  * instructions, tags, and the AI nutrition analysis panel.
- *
- * TODO: Replace mock data lookup with GET /api/recipes/:id
  */
 export default function RecipeDetail({ recipes, folders }: RecipeDetailProps) {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +26,7 @@ export default function RecipeDetail({ recipes, folders }: RecipeDetailProps) {
         <span className="text-5xl">🔍</span>
         <p className="text-lg">Recipe not found</p>
         <button
+          type="button"
           onClick={() => navigate("/")}
           className="text-sm text-blue-400 hover:underline"
         >
@@ -54,8 +53,9 @@ export default function RecipeDetail({ recipes, folders }: RecipeDetailProps) {
       {/* Back button */}
       <div className="px-4 sm:px-6 pt-6 pb-3 shrink-0">
         <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          type="button"
+          onClick={() => navigate("/", { replace: true })}
+          className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer select-none caret-transparent"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to library
@@ -184,7 +184,7 @@ export default function RecipeDetail({ recipes, folders }: RecipeDetailProps) {
         {/* Right column: AI nutrition panel — sticky on desktop */}
         <div className="w-full lg:w-88 lg:shrink-0">
           <div className="sticky top-4">
-            <NutritionPanel recipeId={recipe.id} recipeTitle={recipe.title} />
+            <NutritionPanel recipeId={recipe.id} />
           </div>
         </div>
       </div>
