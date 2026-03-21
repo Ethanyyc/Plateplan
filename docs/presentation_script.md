@@ -3,7 +3,7 @@
 ## Slide 1 - Title
 
 ## Slide 2 - Introduction
-"Hi everyone, we are Team 32. Team 32 developed PlatePlan, a full-stack web application that helps home cooks organize recipes and plan balanced weekly meals efficiently. The system supports authenticated users who can create and edit recipes, upload cover photos, and assign meals to breakfast, lunch, and dinner slots in a weekly planner. PlatePlan is built using React + TypeScript on the frontend, Express + TypeScript on the backend, and PostgreSQL with Prisma for persistent relational data, with DigitalOcean cloud storage for images and OpenAI-powered nutrition insights. Our goal is to simplify everyday meal planning with actionable dietary guidance."
+"Hi everyone, we are Team 32. We built PlatePlan to make everyday meal planning simpler for home cooks, students, and families. Instead of juggling scattered notes and apps, users can keep their recipes in one place, plan a full week of meals, and get practical nutrition suggestions they can actually act on. Our goal is to reduce planning stress and help people make healthier choices with less effort."
 
 ---
 
@@ -15,16 +15,12 @@
 ## Slide 4 - App Features Overview
 "Before going into technical requirements, here is a quick feature walkthrough of the app. First, users have a personal recipe library where they can create, edit, delete, search, and organize recipes with ingredients, tags, and folders. Second, they can build a weekly plan by assigning recipes to breakfast, lunch, and dinner slots across seven days with drag-and-drop interactions. Third, they can request AI nutrition analysis for a recipe and AI diet suggestions for the full weekly plan."
 
-"Do the demo side by side"
-
 ---
 
 ## Slide 5 - Core Technical Requirements
-"Now we are moving to core technical requirements. Our architecture approach is Option B: separate frontend and backend. On the frontend, we use TypeScript for code, React for UI, and Tailwind CSS with shadcn/ui components, with responsive layouts for desktop and mobile. On the backend, we use TypeScript with an Express REST API. For persistence, we use PostgreSQL through Prisma. For required cloud file handling, we upload recipe images to DigitalOcean Spaces and store the returned URL with each recipe."
+"Now we are moving to core technical requirements. We use Option B architecture with a separate frontend and backend. The frontend is React + TypeScript with Tailwind and shadcn/ui, and the backend is an Express REST API in TypeScript. Data is stored in PostgreSQL through Prisma, and recipe images are uploaded to DigitalOcean Spaces with the URL saved in the database."
 
-"For responsive design, we use mobile-first Tailwind breakpoints and flexible layouts, so key pages switch between stacked and multi-column arrangements, with adjusted spacing, typography, and navigation behavior across phone and desktop screen sizes."
-
-"For frontend-backend interaction, the React UI sends cookie-based API requests when users create, edit, or plan meals. The Express backend verifies the session, validates input, then reads or writes data in PostgreSQL and cloud storage when needed. After that, it returns structured JSON responses, and the frontend updates local state so the UI reflects changes immediately without a page reload."
+"The app is responsive using mobile-first Tailwind layouts that adapt between phone and desktop. For integration, the React client sends cookie-based requests, the backend verifies sessions and validates input, then reads and writes PostgreSQL and cloud image data, and returns structured JSON so the UI updates immediately without page reloads."
 
 ---
 
@@ -36,3 +32,4 @@
 ---
 
 ## Slide 7 - Closing
+For future improvements, we want to focus on three areas. First, stronger nutrition quality: integrating a verified nutrition data source and adding confidence indicators so users can better interpret AI outputs. Second, smarter planning support: one-click weekly auto-fill, grocery list generation from selected meals, and preference-aware suggestions for budget, dietary tags, or prep time.
