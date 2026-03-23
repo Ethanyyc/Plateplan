@@ -8,12 +8,12 @@
 ---
 
 ## Slide 3 - Problem + Users
-"Our main users are students, busy home cooks, and families. The use case is simple: users save and manage their own recipes, assign them to breakfast, lunch, and dinner slots for each day, and then request AI suggestions for healthier choices. The key value is reducing planning friction while giving practical diet feedback, instead of only showing raw nutrition numbers."
+"Our main users are students, busy home cooks, and families. The use case is simple: users save and manage their own recipes, create a weekly meal plan, and then request AI suggestions for healthier choices. The key value is reducing planning friction while giving practical diet feedback, instead of only showing raw nutrition numbers."
 
 ---
 
 ## Slide 4 - App Features Overview
-"Before going into technical requirements, here is a quick feature walkthrough of the app. First, users have a personal recipe library where they can create, edit, delete, search, and organize recipes with ingredients, tags, and folders. Second, they can build a weekly plan by assigning recipes to breakfast, lunch, and dinner slots across seven days with drag-and-drop interactions. Third, they can request AI nutrition analysis for a recipe and AI diet suggestions for the full weekly plan."
+"Before going into technical requirements, here is a quick feature walkthrough of the app. First, users have a personal recipe library where they can create, edit, delete, search, and organize recipes with ingredients, tags, and folders. Second, they can build a weekly plan by assigning recipes to breakfast, lunch, and dinner slots across seven days with drag-and-drop interactions. Third, they can request AI nutrition analysis for a single recipe and AI diet suggestions for the full weekly plan."
 
 ---
 
@@ -25,10 +25,12 @@
 ---
 
 ## Slide 6 - Advanced Features
-"Separately from core requirements, we implemented two advanced features. The first is user authentication and authorization, implemented with Better Auth. Better Auth handles sign-up, sign-in, sign-out, and session cookies, and our backend checks those sessions on protected routes to identify the current user. That is how we enforce user-scoped access control across recipe, folder, and meal-plan data."
+"Separately from core requirements, we implemented two advanced features. The first is user authentication and authorization, implemented with Better Auth. Better Auth handles sign-up, sign-in, sign-out, and session cookies, and our backend checks those sessions on protected routes to identify the current user."
 
 "The second is external AI integration through the OpenAI API. Our backend sends recipe ingredient lists or weekly meal-plan summaries to OpenAI, receives structured nutrition and recommendation outputs, and returns those results to the frontend panels. This keeps AI usage integrated into normal app workflows instead of a separate tool."
 
+---
+"Now let's move to the demo"
 ---
 
 ## Slide 7 - Closing
