@@ -474,6 +474,9 @@ PlatePlan achieved the planned goal of delivering a coherent meal-planning platf
 ### 9.1 Video Demo
 URL: [https://www.youtube.com/watch?v=vZfjC_JHh0Q](https://www.youtube.com/watch?v=vZfjC_JHh0Q)
 
+### 9.2 Live Demo (deployment)
+URL: http://159.203.58.86:5173/ (Use the test account mentioned above to login)
+
 ---
 
 ## 10. Documentation and Resources
