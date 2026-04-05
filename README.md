@@ -428,6 +428,9 @@ cd backend && npm run build
 cd frontend && npm run build
 ```
 
+### 6.4 Environmental Variables and Credentials
+Credentials file `.env` sent to TA, needs to be placed under `backend/` folder
+
 ---
 
 ## 7. Individual Contributions
